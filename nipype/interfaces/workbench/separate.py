@@ -99,12 +99,24 @@ class CiftiCreateDenseTimeseriesInputSpec(CommandLineInputSpec):
         argstr="-left-metric %s",
         position=3,
         desc="metric for left surface")
+    roi_left = File(
+        exists=True,
+        mandatory=True,
+        argstr="-roi-left %s",
+        position=4,
+        desc="roi of vertices to use from left surface")
     right_metric = File(
         exists=True,
         mandatory=True,
         argstr="-right-metric %s",
-        position=4,
+        position=5,
         desc="metric for right surface")
+    roi_right = File(
+        exists=True,
+        mandatory=True,
+        argstr="-roi-right %s",
+        position=6,
+        desc="roi of vertices to use from right surface")
 
 class CiftiCreateDenseTimeseriesOutputSpec(TraitedSpec):
     out_file = File(exists=True, desc="the output cifti file")
