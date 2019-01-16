@@ -121,9 +121,9 @@ class CiftiCreateDenseTimeseries(WBCommand):
     _cmd = 'wb_command -cifti-create-dense-timeseries'
 
     def _format_arg(self, opt, spec, val):
-        return super(CiftiSeparate, self)._format_arg(opt, spec, val)
+        return super(CiftiCreateDenseTimeseries, self)._format_arg(opt, spec, val)
 
     def _list_outputs(self):
-        outputs = super(CiftiSeparate, self)._list_outputs()
+        outputs = super(CiftiCreateDenseTimeseries, self)._list_outputs()
         return outputs
 
