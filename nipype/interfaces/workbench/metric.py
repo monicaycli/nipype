@@ -159,3 +159,61 @@ class MetricResample(WBCommand):
             roi_file = self._gen_filename(self.inputs.in_file, suffix='_roi')
             outputs['roi_file'] = os.path.abspath(roi_file)
         return outputs
+
+
+class MetricDilateInputSpec(CommandLineInputSpec):
+    in_file = File(
+        exists=True,
+        mandatory=True,
+        argstr="%s",
+        position=0,
+        desc="the metric to dilate")
+    surface_file = File(
+        exists=True,
+        mandatory=True,
+        argstr="%s",
+        position=1,
+        desc="the surface to compute on")
+    distance = traits.Float(
+        argstr="%.1f",
+        mandatory=True,
+        position=2,
+        desc="distance in mm to dilate")
+    out_file = File(
+        name_source=["in_file"],
+        name_template="%s_dil.gii",
+        keep_extension=False,
+        argstr="%s",
+        position=3,
+        desc="the output metric")
+    nearest = traits.Bool(
+        position=4,
+        argstr="-nearest",
+        desc="use the nearest good value instead of a weighted average")
+    linear = traits.Bool(
+        position=4,
+        argstr="-linear",
+        desc="use the nearest good value instead of a weighted average")
+
+
+class MetricDilateOutputSpec(TraitedSpec):
+    out_file = File(exists=True, desc="the output metric file")
+
+
+class MetricDilate(WBCommand):
+    """
+    Dilate a metric
+
+   
+    """
+    input_spec = MetricDilateInputSpec
+    output_spec = MetricDilateOutputSpec
+    _cmd = 'wb_command -metric-dilate'
+
+    def _format_arg(self, opt, spec, val):
+        return super(MetricDilate, self)._format_arg(opt, spec, val)
+
+    def _list_outputs(self):
+        outputs = super(MetricDilate, self)._list_outputs()
+        return outputs
+

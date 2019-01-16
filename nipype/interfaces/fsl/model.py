@@ -762,6 +762,13 @@ threshold=10, results_dir='stats')
           and LooseVersion(Info.version()) > LooseVersion('5.0.4')):
         input_spec = FILMGLSInputSpec505
 
+    def get_extension(self):
+        ext = 'nii'
+        if Info.version() and LooseVersion(Info.version()) > LooseVersion('5.0.6'):
+            if self.inputs.mode == 'surface':
+                ext = 'func.gii'
+        return ext
+
     def _get_pe_files(self, cwd):
         files = None
         if isdefined(self.inputs.design_file):
@@ -772,7 +779,7 @@ threshold=10, results_dir='stats')
                     files = []
                     for i in range(numpes):
                         files.append(
-                            self._gen_fname('pe%d.nii' % (i + 1), cwd=cwd))
+                            self._gen_fname('pe%d.%s' % (i + 1, self.get_extension()), cwd=cwd))
                     break
             fp.close()
         return files
@@ -797,6 +804,7 @@ threshold=10, results_dir='stats')
         return numtcons, numfcons
 
     def _list_outputs(self):
+        ext = self.get_extension()
         outputs = self._outputs().get()
         cwd = os.getcwd()
         results_dir = os.path.join(cwd, self.inputs.results_dir)
@@ -804,16 +812,16 @@ threshold=10, results_dir='stats')
         pe_files = self._get_pe_files(results_dir)
         if pe_files:
             outputs['param_estimates'] = pe_files
-        outputs['residual4d'] = self._gen_fname('res4d.nii', cwd=results_dir)
+        outputs['residual4d'] = self._gen_fname('res4d.%s' % ext, cwd=results_dir)
         outputs['dof_file'] = os.path.join(results_dir, 'dof')
         outputs['sigmasquareds'] = self._gen_fname(
-            'sigmasquareds.nii', cwd=results_dir)
+            'sigmasquareds.%s' % ext, cwd=results_dir)
         outputs['thresholdac'] = self._gen_fname(
-            'threshac1.nii', cwd=results_dir)
+            'threshac1.%s' % ext, cwd=results_dir)
         if (Info.version()
                 and LooseVersion(Info.version()) < LooseVersion('5.0.7')):
             outputs['corrections'] = self._gen_fname(
-                'corrections.nii', cwd=results_dir)
+                'corrections.%s' % ext, cwd=results_dir)
         outputs['logfile'] = self._gen_fname(
             'logfile', change_ext=False, cwd=results_dir)
 
@@ -829,16 +837,16 @@ threshold=10, results_dir='stats')
             for i in range(numtcons):
                 copes.append(
                     self._gen_fname(
-                        'cope%d.nii' % (base_contrast + i), cwd=pth))
+                        'cope%d.%s' % (base_contrast + i, ext), cwd=pth))
                 varcopes.append(
                     self._gen_fname(
-                        'varcope%d.nii' % (base_contrast + i), cwd=pth))
+                        'varcope%d.%s' % (base_contrast + i, ext), cwd=pth))
                 zstats.append(
                     self._gen_fname(
-                        'zstat%d.nii' % (base_contrast + i), cwd=pth))
+                        'zstat%d.%s' % (base_contrast + i, ext), cwd=pth))
                 tstats.append(
                     self._gen_fname(
-                        'tstat%d.nii' % (base_contrast + i), cwd=pth))
+                        'tstat%d.%s' % (base_contrast + i, ext), cwd=pth))
             if copes:
                 outputs['copes'] = copes
                 outputs['varcopes'] = varcopes
@@ -849,10 +857,10 @@ threshold=10, results_dir='stats')
             for i in range(numfcons):
                 fstats.append(
                     self._gen_fname(
-                        'fstat%d.nii' % (base_contrast + i), cwd=pth))
+                        'fstat%d.%s' % (base_contrast + i, ext), cwd=pth))
                 zfstats.append(
                     self._gen_fname(
-                        'zfstat%d.nii' % (base_contrast + i), cwd=pth))
+                        'zfstat%d.%s' % (base_contrast + i, ext), cwd=pth))
             if fstats:
                 outputs['fstats'] = fstats
                 outputs['zfstats'] = zfstats
