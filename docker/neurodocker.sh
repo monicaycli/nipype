@@ -28,6 +28,7 @@ docker run --rm "$NEURODOCKER_IMAGE" generate docker \
   --user root \
   --install connectome-workbench \
   -r 'cp /neurodocker/startup.sh /singularity' \
+  -r 'mkdir /scratch && mkdir /apps && mkdir /apps2' \
   --user neuro \
   --workdir /work
 
